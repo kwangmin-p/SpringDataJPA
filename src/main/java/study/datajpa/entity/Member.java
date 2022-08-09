@@ -9,6 +9,10 @@ import javax.persistence.*;
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED) //    jpa는 기본생성자가 있어야 한다. 하지만 사용하지 못하도록 protected로 선언했다. jpa는 프록시 기술을 쓰므로 private 으로 쓸 경우 오류 발생.
 @ToString(of = {"id", "username", "age"}) // ToString 에 Team이 있으면 안된다. 무한 loop 에 빠진다.
+@NamedQuery(
+        name="Member.findByUsername",
+        query="select m from Member m where m.username = :username"
+)
 public class Member {
 
     @Id @GeneratedValue
