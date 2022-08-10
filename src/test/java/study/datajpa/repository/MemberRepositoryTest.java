@@ -11,6 +11,7 @@ import study.datajpa.entity.Team;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -141,7 +142,7 @@ class MemberRepositoryTest {
     @Test
     public void findByNames(){
         Member m1 = new Member("AAA", 10);
-        Member m2 = new Member("AAA", 20);
+        Member m2 = new Member("BBB", 20);
         memberRepository.save(m1);
         memberRepository.save(m2);
 
@@ -150,5 +151,21 @@ class MemberRepositoryTest {
         for (Member s : usernameList) {
             System.out.println("s = " + s);
         }
+    }
+
+    @Test
+    public void returnType(){
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("BBB", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        List<Member> memberList = memberRepository.findMemberListByUsername("AAA"); // jpa List 반환은 데이터 없을 경우 null 이 아니라 empty collection 을 반환한다.
+        Member member = memberRepository.findMemberByUsername("AAA"); // 단건인 경우는 데이터 없을 경우 null 을 반환한다.
+        Optional<Member> optionalMember = memberRepository.findOptionalMemberByUsername("AAA");
+
+        System.out.println(memberList);
+        System.out.println(member);
+        System.out.println(optionalMember);
     }
 }
