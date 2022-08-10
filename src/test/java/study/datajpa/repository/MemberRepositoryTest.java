@@ -3,6 +3,9 @@ package study.datajpa.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
@@ -167,5 +170,39 @@ class MemberRepositoryTest {
         System.out.println(memberList);
         System.out.println(member);
         System.out.println(optionalMember);
+    }
+
+    @Test
+    public void paging(){
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 10));
+        memberRepository.save(new Member("member3", 10));
+        memberRepository.save(new Member("member4", 10));
+        memberRepository.save(new Member("member5", 10));
+
+        int age = 10;
+//        pageRequest가 Pageable 의 구현체. Pageable은 인터페이스
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+
+//        when
+        Page<Member> page = memberRepository.findByAge(age, pageRequest); // offset 없이 단순히 limit3만 걸고싶다면 memberRepository.findTop3ByAge 를 호출해도된다.
+
+//        dto 로 변환하기 예시
+        Page<MemberDto> memberDtoPage = page.map(member -> new MemberDto(member.getId(), member.getUsername(), null));
+
+//        then
+        List<Member> content = page.getContent();
+        long totalElements = page.getTotalElements(); // totalCount
+        for (Member member : content) {
+            System.out.println("member = " + member);
+        }
+        System.out.println("totalElements = " +totalElements);
+
+        assertThat(content.size()).isEqualTo(3);
+        assertThat(page.getTotalElements()).isEqualTo(5); //총 elem 개수(limit이 아님). where 조건에 맞는 총 개수를 뜻함.
+        assertThat(page.getNumber()).isEqualTo(0); //페이지 번호
+        assertThat(page.getTotalPages()).isEqualTo(2); // 총 페이지 개수
+        assertThat(page.isFirst()).isTrue();
+        assertThat(page.hasNext()).isTrue();
     }
 }
