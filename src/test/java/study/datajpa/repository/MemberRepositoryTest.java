@@ -9,6 +9,7 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,7 +66,6 @@ class MemberRepositoryTest {
     public void findByUsernameAndAgeGreaterThan(){
         Member m1 = new Member("AAA", 10);
         Member m2 = new Member("AAA", 20);
-
         memberRepository.save(m1);
         memberRepository.save(m2);
 
@@ -89,7 +89,6 @@ class MemberRepositoryTest {
     public void testNamedQuery(){
         Member m1 = new Member("AAA", 10);
         Member m2 = new Member("AAA", 20);
-
         memberRepository.save(m1);
         memberRepository.save(m2);
 
@@ -102,7 +101,6 @@ class MemberRepositoryTest {
     public void testQuery(){
         Member m1 = new Member("AAA", 10);
         Member m2 = new Member("AAA", 20);
-
         memberRepository.save(m1);
         memberRepository.save(m2);
 
@@ -115,7 +113,6 @@ class MemberRepositoryTest {
     public void findUsernameList(){
         Member m1 = new Member("AAA", 10);
         Member m2 = new Member("AAA", 20);
-
         memberRepository.save(m1);
         memberRepository.save(m2);
 
@@ -137,6 +134,20 @@ class MemberRepositoryTest {
 
         List<MemberDto> usernameList = memberRepository.findMemberDto();
         for (MemberDto s : usernameList) {
+            System.out.println("s = " + s);
+        }
+    }
+
+    @Test
+    public void findByNames(){
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("AAA", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+
+        List<Member> usernameList = memberRepository.findByNames(Arrays.asList("AAA", "BBB"));
+        for (Member s : usernameList) {
             System.out.println("s = " + s);
         }
     }

@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -26,4 +27,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 //    @query 어노테이션에 jpql 을 사용해서 dto로 반환할 경우 패키지경로를 다 적어줘야해서 불편하다.
     @Query("select new study.datajpa.dto.MemberDto(m.id, m.username, t.name) from Member m join m.team t")
     List<MemberDto> findMemberDto();
+
+    @Query("select m from Member m where m.username in :names")
+    List<Member> findByNames(@Param("names") Collection<String> names);
 }
